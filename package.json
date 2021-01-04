@@ -1,0 +1,13 @@
+{
+  "name": "aoc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:g-un--/aoc.git",
+  "author": "Gino Ungureanu <gino.ungureanu@bolt.eu>",
+  "license": "MIT",
+  "dependencies": {
+    "npx": "^10.2.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
