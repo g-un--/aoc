@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:g-un--/aoc.git",
-  "author": "Gino Ungureanu <gino.ungureanu@bolt.eu>",
+  "author": "Gino Ungureanu <ginoungureanu.mail@gmail.com>",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
