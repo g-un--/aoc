@@ -1,8 +1,8 @@
-import { part1 } from './day2'
+import { part1, part2 } from './day2'
 import fs from 'fs';
 import path from 'path';
 
-describe("2015/day1/part1", () => {
+describe("2015/day2/part1", () => {
 
   test('2x3x4', () => {
     expect(part1(["2x3x4"])).toBe("58");
@@ -17,4 +17,25 @@ describe("2015/day1/part1", () => {
     expect(part1(input)).toBe("1586300");
   });
 
+});
+
+describe("2015/day2/part2", () => {
+
+  test('2x3x4', () => {
+    expect(part2(["2x3x4"])).toBe("34");
+  });
+
+  test('1x1x10', () => {
+    expect(part2(["1x1x10"])).toBe("14");
+  });
+  
+  test('garbage', () => {
+    expect(part2(["garbage"])).toBe("0");
+  });
+  
+  test('input.txt', () => {
+    const input = fs.readFileSync(path.resolve(__dirname, "./input.txt"), "utf-8").split("\n");
+    expect(part2(input)).toBe("3737498");
+  });
+  
 });
