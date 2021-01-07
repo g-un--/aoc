@@ -1,6 +1,5 @@
-import { part1, part2 } from './day2'
-import fs from 'fs';
-import path from 'path';
+import { part1, part2 } from './day2';
+import { getInput } from '../utils'
 
 describe("2015/day2/part1", () => {
 
@@ -13,7 +12,7 @@ describe("2015/day2/part1", () => {
   });
   
   test('input.txt', () => {
-    const input = fs.readFileSync(path.resolve(__dirname, "./input.txt"), "utf-8").split("\n");
+    const input = getInput(__dirname); 
     expect(part1(input)).toBe("1586300");
   });
 
@@ -34,7 +33,7 @@ describe("2015/day2/part2", () => {
   });
   
   test('input.txt', () => {
-    const input = fs.readFileSync(path.resolve(__dirname, "./input.txt"), "utf-8").split("\n");
+    const input = getInput(__dirname); 
     expect(part2(input)).toBe("3737498");
   });
   
