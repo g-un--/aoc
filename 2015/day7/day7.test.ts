@@ -1,4 +1,4 @@
-import { part1 } from './day7';
+import { part1, part2 } from './day7';
 import { getInput } from '../utils'
 
 describe("2015/day7/part1", () => {
@@ -28,7 +28,17 @@ describe("2015/day7/part1", () => {
   
   test('input.txt', () => {
     const input = getInput(__dirname); 
-    expect(part1(input).get("a")?.toString()).toBe("956");
+    expect(part1(input).get("a")).toBe(956);
   });
   
+});
+
+
+describe("2015/day7/part2", () => {
+
+  test('input.txt', () => {
+    const input = getInput(__dirname); 
+    expect(part2(input).get("a")).toBe(40149);
+  });
+
 });

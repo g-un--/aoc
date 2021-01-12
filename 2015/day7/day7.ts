@@ -126,3 +126,10 @@ export function part1(input: string[]): Map<string, number> {
     return variables;
 }
 
+export function part2(input: string[]): Map<string, number> {
+    let bSignalIndex = input.findIndex((command) => command.match(/->\sb$/));
+    const aValue = part1(input).get("a");
+    input[bSignalIndex] = `${aValue} -> b`;
+    return part1(input);
+}
+
