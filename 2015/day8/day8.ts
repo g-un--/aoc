@@ -42,3 +42,17 @@ export function part1(input: string[]): number {
     }
     return totalLength - totalChars;
 }
+
+export function part2(input: string[]): number {
+    let totalChars = 0;
+    let totalLength = 0;
+    for(const target of input) {
+        if(target.length === 0) {
+            continue;
+        }
+        const encoded = "\"" + target.replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\"";
+        totalLength += target.length; 
+        totalChars += encoded.length;
+    }
+    return totalChars - totalLength;
+}
