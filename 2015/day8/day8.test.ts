@@ -11,8 +11,7 @@ const example = [
 describe("2015/day8/part1", () => {
 
   test('example', () => {
-    const result = part1(example);
-    expect(result).toBe(12);
+    expect(part1(example)).toBe(12);
   });
 
   
@@ -26,8 +25,7 @@ describe("2015/day8/part1", () => {
 describe("2015/day8/part2", () => {
 
     test('example', () => {
-      const result = part2(example);
-      expect(result).toBe(19);
+      expect(part2(example)).toBe(19);
     });
   
 
@@ -36,4 +34,4 @@ describe("2015/day8/part2", () => {
       expect(part2(input)).toBe(2074);
     });
     
-  });
+});
