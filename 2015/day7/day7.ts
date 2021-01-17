@@ -132,4 +132,3 @@ export function part2(input: string[]): Map<string, number> {
     input[bSignalIndex] = `${aValue} -> b`;
     return part1(input);
 }
-

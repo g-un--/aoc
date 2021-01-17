@@ -31,4 +31,4 @@ describe("2015/day9/part1", () => {
       expect(part2(input)).toBe(909);
     });
     
-  });
+});
