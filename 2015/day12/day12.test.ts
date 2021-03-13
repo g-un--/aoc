@@ -62,6 +62,6 @@ describe("2015/day12/part2", () => {
     
     test('input.txt', () => {
         const input = getInput(__dirname)[0];
-        expect(sumNumbersWithoutRedObjects(input)).toBe(111754);
+        expect(sumNumbersWithoutRedObjects(input)).toBe(65402);
     }); 
 });
