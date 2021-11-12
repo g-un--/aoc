@@ -4,5 +4,11 @@ https://adventofcode.com/
 ```
 cd ./2015
 yarn install
-yarn test
+yarn test day1
+```
+* 2018 - C#
+```
+cd ./2018
+dotnet build
+dotnet test --filter day1
 ```
