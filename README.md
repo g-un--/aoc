@@ -12,3 +12,9 @@ cd ./2018
 dotnet build
 dotnet test --filter day1
 ```
+* 2021 - C#
+```
+cd ./2021
+dotnet build
+dotnet test --filter day1
+```
