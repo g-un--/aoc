@@ -16,25 +16,25 @@ public class Day1
                 result += 1;
             }
         }
-        Console.WriteLine($"Part1: {result}");
         Assert.Equal(1583, result);
     }
 
-     [Fact]
+    [Fact]
     public async Task Part1Method2()
     {
         var content = await ReadInputLines(nameof(Day1));
         var numbers = content.Select(x => int.Parse(x));
         var result = 0;
         var previousSum = int.MaxValue;
-        foreach(var window in numbers.SlidingWindow(1)) {
+        foreach (var window in numbers.SlidingWindow(1))
+        {
             var currentSum = window.Sum();
-            if (previousSum < currentSum) {
+            if (previousSum < currentSum)
+            {
                 result += 1;
             }
             previousSum = currentSum;
         }
-        Console.WriteLine($"Part1 Method2: {result}");
         Assert.Equal(1583, result);
     }
 
@@ -53,7 +53,6 @@ public class Day1
                 result += 1;
             }
         }
-        Console.WriteLine($"Part2: {result}");
         Assert.Equal(1627, result);
     }
 
@@ -64,14 +63,15 @@ public class Day1
         var numbers = content.Select(x => int.Parse(x));
         var result = 0;
         var previousSum = int.MaxValue;
-        foreach(var window in numbers.SlidingWindow(3)) {
+        foreach (var window in numbers.SlidingWindow(3))
+        {
             var currentSum = window.Sum();
-            if (previousSum < currentSum) {
+            if (previousSum < currentSum)
+            {
                 result += 1;
             }
             previousSum = currentSum;
         }
-        Console.WriteLine($"Part2 Method2: {result}");
         Assert.Equal(1627, result);
     }
 }

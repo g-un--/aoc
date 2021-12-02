@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace _2021;
 
 static class Utils
@@ -36,6 +38,14 @@ static class Utils
         }
         if (window.Count > 0) {
             yield return new List<T>(window);
+        }
+    }
+    
+    public static void MatchGroup(this string input, string pattern, Action<string> action) 
+    {
+        var match = Regex.Match(input, pattern);
+        if (match.Success) {
+            action(match.Groups[1].Value);
         }
     }
 }
