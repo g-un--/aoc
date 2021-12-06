@@ -3,6 +3,11 @@ using static Utils;
 
 public class Day4
 {
+    public record struct Board((int, bool)[,] values)
+    {
+        public Board() : this(new (int, bool)[5, 5]) { }
+    }
+
     [Fact]
     public async Task Part1()
     {
@@ -10,7 +15,7 @@ public class Day4
         var numbers = content[0].Split(",").Select(int.Parse).ToArray();
         var boards = ParseBoards(content.Skip(2));
 
-        (int, bool)[,]? winnerBoard = null;
+        Board? winnerBoard = null;
         int? winnerNumber = null;
 
         Play(boards, numbers, (number, board) =>
@@ -29,7 +34,7 @@ public class Day4
         {
             throw new Exception("We should have a winner");
         }
-        var score = GetScore(winnerBoard, (int)winnerNumber);
+        var score = GetScore((Board)winnerBoard, (int)winnerNumber);
         Assert.Equal(74320, score);
     }
 
@@ -40,44 +45,48 @@ public class Day4
         var numbers = content[0].Split(",").Select(int.Parse).ToArray();
         var boards = ParseBoards(content.Skip(2));
 
-        var winnersBoards = new HashSet<(int, bool)[,]>();
-        (int, bool)[,]? lastWinnerBoard = null;
+        var winnersBoards = new HashSet<Board>();
+        Board? lastWinnerBoard = null;
         int? lastWinnerNumber = null;
 
         Play(boards, numbers, (number, board) =>
         {
-            UpdateBoard(board, number);
-            if (!winnersBoards.Contains(board) && CheckBoard(board))
+            bool shouldContinue = true;
+            if (!winnersBoards.Contains(board))
             {
-                winnersBoards.Add(board);
-                lastWinnerBoard = board;
-                lastWinnerNumber = number;
-                if (winnersBoards.Count == boards.Count)
+                UpdateBoard(board, number);
+                if (CheckBoard(board))
                 {
-                    return false;
+                    winnersBoards.Add(board);
+                    lastWinnerBoard = board;
+                    lastWinnerNumber = number;
+                    if (winnersBoards.Count == boards.Count)
+                    {
+                        shouldContinue = false;
+                    }
                 }
             }
-            return true;
+            return shouldContinue;
         });
 
         if (lastWinnerBoard == null || lastWinnerNumber == null)
         {
             throw new Exception("We should have a winner");
         }
-        var score = GetScore(lastWinnerBoard, (int)lastWinnerNumber);
+        var score = GetScore((Board)lastWinnerBoard, (int)lastWinnerNumber);
         Assert.Equal(17884, score);
     }
 
-    static List<(int, bool)[,]> ParseBoards(IEnumerable<string> input)
+    static List<Board> ParseBoards(IEnumerable<string> input)
     {
-        var boards = new List<(int, bool)[,]>();
-        (int, bool)[,] currentBoard = new (int, bool)[5, 5];
+        var boards = new List<Board>();
+        var currentBoard = new Board();
         var currentLine = 0;
         foreach (var line in input)
         {
             if (string.IsNullOrWhiteSpace(line))
             {
-                currentBoard = new (int, bool)[5, 5];
+                currentBoard = new Board();
                 boards.Add(currentBoard);
                 currentLine = 0;
             }
@@ -86,7 +95,7 @@ public class Day4
                 var lineNumbers = line.Split(" ", StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
                 for (var column = 0; column < 5; column++)
                 {
-                    currentBoard[currentLine, column] = (lineNumbers[column], false);
+                    currentBoard.values[currentLine, column] = (lineNumbers[column], false);
                 }
                 currentLine += 1;
             }
@@ -94,22 +103,22 @@ public class Day4
         return boards;
     }
 
-    static void UpdateBoard((int, bool)[,] board, int number)
+    static void UpdateBoard(Board board, int number)
     {
         for (var row = 0; row < 5; row++)
         {
             for (var column = 0; column < 5; column++)
             {
-                var (boardNumber, _) = board[row, column];
+                var (boardNumber, _) = board.values[row, column];
                 if (boardNumber == number)
                 {
-                    board[row, column] = (boardNumber, true);
+                    board.values[row, column] = (boardNumber, true);
                 }
             }
         }
     }
 
-    static void Play(List<(int, bool)[,]> boards, int[] numbers, Func<int, (int, bool)[,], bool> handler)
+    static void Play(List<Board> boards, int[] numbers, Func<int, Board, bool> handler)
     {
         var shouldContinue = true;
         foreach (var number in numbers)
@@ -129,7 +138,7 @@ public class Day4
         }
     }
 
-    static bool CheckBoard((int, bool)[,] board)
+    static bool CheckBoard(Board board)
     {
         for (var dimension1 = 0; dimension1 < 5; dimension1++)
         {
@@ -137,12 +146,12 @@ public class Day4
             var currentColumnHightlightedNumbers = 0;
             for (var dimension2 = 0; dimension2 < 5; dimension2++)
             {
-                var (boardNumber1, isHightlighted1) = board[dimension1, dimension2];
+                var (boardNumber1, isHightlighted1) = board.values[dimension1, dimension2];
                 if (isHightlighted1)
                 {
                     currentRowHighlightedNumbers += 1;
                 }
-                var (boardNumber2, isHightlighted2) = board[dimension2, dimension1];
+                var (boardNumber2, isHightlighted2) = board.values[dimension2, dimension1];
                 if (isHightlighted2)
                 {
                     currentColumnHightlightedNumbers += 1;
@@ -156,14 +165,14 @@ public class Day4
         return false;
     }
 
-    static int GetScore((int, bool)[,] winnerBoard, int winnerNumber)
+    static int GetScore(Board winnerBoard, int winnerNumber)
     {
         var score = 0;
         for (var row = 0; row < 5; row++)
         {
             for (var column = 0; column < 5; column++)
             {
-                var (boardNumber, isHighlighted) = winnerBoard[row, column];
+                var (boardNumber, isHighlighted) = winnerBoard.values[row, column];
                 if (!isHighlighted)
                 {
                     score += boardNumber;

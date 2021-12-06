@@ -10,7 +10,9 @@ static class Utils
         var input = Path.Combine(Environment.CurrentDirectory, "input", fileName);
         return File.ReadAllLinesAsync(input);
     }
-         
+
+    public static  List<int> ToIntList(this string input, string separator) =>
+        input.Split(separator, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
 
     public static IEnumerable<T> RepeatMany<T>(this IEnumerable<T> input)
     {
