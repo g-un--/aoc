@@ -80,4 +80,19 @@ static class Utils
         clone.ExceptWith(target);
         return clone;
     }
+
+    public static int[,] GetInputArray(string[] input, int rows, int columns)
+    {
+        var result = new int[rows, columns];
+
+        for (var row = 0; row < rows; row++)
+        {
+            for (var column = 0; column < columns; column++)
+            {
+                result[row, column] = (int)Char.GetNumericValue(input[row][column]);
+            }
+        }
+
+        return result;
+    }
 }

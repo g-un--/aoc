@@ -3,21 +3,6 @@ using static Utils;
 
 public class Day11
 {
-    static int[,] GetInputArray(string[] input)
-    {
-        var result = new int[10, 10];
-
-        for (var row = 0; row < 10; row++)
-        {
-            for (var column = 0; column < 10; column++)
-            {
-                result[row, column] = (int)Char.GetNumericValue(input[row][column]);
-            }
-        }
-
-        return result;
-    }
-
     static void UpdateNearbyCells(int[,] array, bool[,] arrayCheck, int row, int column)
     {
         if(arrayCheck[row, column]) {
@@ -94,7 +79,7 @@ public class Day11
     public async Task Part1()
     {
         var input = await ReadInputLines(nameof(Day11));
-        var array = GetInputArray(input);
+        var array = GetInputArray(input, 10, 10);
         var sum = 0;
 
         for (var step = 1; step <= 100; step++)
@@ -111,7 +96,7 @@ public class Day11
     public async Task Part2()
     {
         var input = await ReadInputLines(nameof(Day11));
-        var array = GetInputArray(input);
+        var array = GetInputArray(input, 10, 10);
         var step = 0;
         var result = 0;
 
