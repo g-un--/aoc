@@ -81,7 +81,8 @@ public class Day23
             var pieceToMoveFromHallway = GetValidPieceToMoveFromHallway(board).ToList();
             foreach (var (index, piece) in pieceToMoveFromHallway)
             {
-                var (newBoard, shouldRecheck) = MovePieceFromHallway(index, piece, board, costs);
+                var fromHallway = true;
+                var (newBoard, shouldRecheck) = MovePiece(fromHallway, piece, index, board, costs);
                 if (boardsChecked.Contains(board) && !shouldRecheck) continue;
                 if (costs[newBoard] < min)
                     toCheck.Add(newBoard);
@@ -90,9 +91,11 @@ public class Day23
             var pieceToMoveFromRoom = GetValidPieceToMoveFromRoom(board).ToList();
             foreach (var (room, piecePosition) in pieceToMoveFromRoom)
             {
-                foreach (var hallwayPosition in GetValidHallwaySpots(board.hallway, room))
+                foreach (var index in GetValidHallwaySpots(board.hallway, room))
                 {
-                    var (newBoard, shouldRecheck) = MovePieceToHallway((room, piecePosition), hallwayPosition, board, costs);
+                    var fromHallway = false;
+                    var piece = (room, piecePosition);
+                    var (newBoard, shouldRecheck) = MovePiece(fromHallway, piece, index, board, costs);
                     if (boardsChecked.Contains(board) && !shouldRecheck) continue;
                     if (costs[newBoard] < min)
                         toCheck.Add(newBoard);
@@ -129,9 +132,10 @@ public class Day23
 
     static IEnumerable<(int, int)> GetValidPieceToMoveFromRoom(Board board)
     {
+        var rooms = new[] { board.room0, board.room1, board.room2, board.room3 };
         for (var room = 0; room < 4; room++)
         {
-            var roomValue = GetRoomAt(board, room);
+            var roomValue = rooms[room];
             var expectedChar = ExpectedChars[room];
             var roomIsValid = IsValid(roomValue, expectedChar);
 
@@ -149,6 +153,7 @@ public class Day23
     static IEnumerable<(int, (int, int))> GetValidPieceToMoveFromHallway(Board board)
     {
         var hallway = board.hallway;
+        var rooms = new[] { board.room0, board.room1, board.room2, board.room3 };
         for (var hallwayIndex = 0; hallwayIndex < 11; hallwayIndex++)
         {
             var piece = hallway[hallwayIndex];
@@ -156,7 +161,7 @@ public class Day23
             {
                 var room = Array.IndexOf(ExpectedChars, piece);
                 var roomIndex = 2 + (room * 2);
-                var roomValue = GetRoomAt(board, room);
+                var roomValue = rooms[room];
                 var allEmpty = AllEmptyFromHallway(hallway, hallwayIndex, roomIndex);
                 var target = roomValue.LastIndexOf('.');
                 var isValidRoom = IsValid(roomValue, piece);
@@ -194,39 +199,19 @@ public class Day23
         return allEmpty;
     }
 
-    static (Board, bool) MovePieceToHallway((int, int) piece, int hallwayIndex, Board board, Dictionary<Board, int> costs)
+    static (Board, bool) MovePiece(bool fromHallway, (int, int) piece, int hallwayIndex, Board board, Dictionary<Board, int> costs)
     {
         var rooms = new[] { board.room0, board.room1, board.room2, board.room3 };
         var hallway = board.hallway;
         var (room, pieceIndex) = piece;
-        var charValue = rooms[room][pieceIndex];
+        var charValue = fromHallway ? hallway[hallwayIndex] : rooms[room][pieceIndex];
         var roomIndex = 2 + (room * 2);
         var pieceCost = Costs[charValue];
         var hallwayCost = (Math.Abs(hallwayIndex - roomIndex)) * pieceCost;
         var roomCost = (pieceIndex + 1) * pieceCost;
 
-        var newHallway = UpdateAtIndex(hallway, hallwayIndex, charValue);
-        var newRoom = UpdateAtIndex(rooms[room], pieceIndex, '.');
-        rooms[room] = newRoom;
-        var newBoard = new Board(newHallway, rooms[0], rooms[1], rooms[2], rooms[3]);
-        var newCost = costs[board] + hallwayCost + roomCost;
-        var shouldRecheck = UpdateCosts(newBoard, newCost, costs);
-        return (newBoard, shouldRecheck);
-    }
-
-    static (Board, bool) MovePieceFromHallway(int hallwayIndex, (int, int) piece, Board board, Dictionary<Board, int> costs)
-    {
-        var rooms = new[] { board.room0, board.room1, board.room2, board.room3 };
-        var hallway = board.hallway;
-        var (room, pieceIndex) = piece;
-        var charValue = hallway[hallwayIndex];
-        var roomIndex = 2 + (room * 2);
-        var pieceCost = Costs[charValue];
-        var hallwayCost = (Math.Abs(hallwayIndex - roomIndex)) * pieceCost;
-        var roomCost = (pieceIndex + 1) * pieceCost;
-
-        var newHallway = UpdateAtIndex(hallway, hallwayIndex, '.');
-        var newRoom = UpdateAtIndex(rooms[room], pieceIndex, charValue);
+        var newHallway = hallway.UpdateAtIndex(hallwayIndex, fromHallway ? '.' : charValue);
+        var newRoom = rooms[room].UpdateAtIndex(pieceIndex, fromHallway ? charValue : '.');
         rooms[room] = newRoom;
         var newBoard = new Board(newHallway, rooms[0], rooms[1], rooms[2], rooms[3]);
         var newCost = costs[board] + hallwayCost + roomCost;
@@ -246,38 +231,6 @@ public class Day23
             costs[newBoard] = Math.Min(newCost, oldCost);
             return newCost < oldCost;
         }
-    }
-
-    static string GetRoomAt(Board board, int index)
-    {
-        if (index == 0)
-        {
-            return board.room0;
-        }
-
-        if (index == 1)
-        {
-            return board.room1;
-        }
-
-        if (index == 2)
-        {
-            return board.room2;
-        }
-
-        if (index == 3)
-        {
-            return board.room3;
-        }
-
-        throw new ArgumentException(nameof(index));
-    }
-
-    static string UpdateAtIndex(string target, int index, char newValue)
-    {
-        var newTarget = target.ToCharArray();
-        newTarget[index] = newValue;
-        return new string(newTarget);
     }
 
     static bool IsValid(Board board, int size)

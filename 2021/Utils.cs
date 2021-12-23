@@ -90,6 +90,13 @@ static class Utils
         return clone;
     }
 
+    public static string UpdateAtIndex(this string target, int index, char newValue)
+    {
+        var newTarget = target.ToCharArray();
+        newTarget[index] = newValue;
+        return new string(newTarget);
+    }
+
     public static int[,] GetInputArray(string[] input, int rows, int columns)
     {
         var result = new int[rows, columns];
