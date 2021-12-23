@@ -33,6 +33,7 @@ public class Day23
     {
         var toCheck = new HashSet<Board>();
         var costs = new Dictionary<Board, int>();
+        var boardsChecked = new HashSet<Board>();
         costs[start] = 0;
         toCheck.Add(start);
         int min = int.MaxValue;
@@ -54,6 +55,7 @@ public class Day23
                 foreach (var hallwayPosition in GetValidHallwaySpots(board.hallway, room))
                 {
                     var newBoard = MovePieceToHallway((room, piecePosition), hallwayPosition, board, costs);
+                    if (boardsChecked.Contains(board)) continue;
                     if (costs[newBoard] < min)
                         toCheck.Add(newBoard);
                 }
@@ -63,9 +65,12 @@ public class Day23
             foreach (var (index, piece) in pieceToMoveFromHallway)
             {
                 var newBoard = MovePieceFromHallway(index, piece, board, costs);
+                if (boardsChecked.Contains(board)) continue;
                 if (costs[newBoard] < min)
                     toCheck.Add(newBoard);
             }
+
+            boardsChecked.Add(board);
         }
 
         return min;
@@ -139,26 +144,21 @@ public class Day23
 
     static bool AllEmptyToHallway(string hallway, int hallwayIndex, int roomIndex)
     {
-        var allEmpty = roomIndex > hallwayIndex ?
-            Enumerable.Range(hallwayIndex, roomIndex - hallwayIndex + 1)
-                .Select(x => hallway[x])
-                .All(x => x == '.') :
-            Enumerable.Range(roomIndex, hallwayIndex - roomIndex + 1)
-                .Select(x => hallway[x])
-                .All(x => x == '.');
+        var range = roomIndex > hallwayIndex ?
+            Enumerable.Range(hallwayIndex, roomIndex - hallwayIndex + 1) :
+            Enumerable.Range(roomIndex, hallwayIndex - roomIndex + 1);
 
+        var allEmpty = range.Select(x => hallway[x]).All(x => x == '.');
         return allEmpty;
     }
 
     static bool AllEmptyFromHallway(string hallway, int hallwayIndex, int roomIndex)
     {
-        var allEmpty = hallwayIndex > roomIndex ?
-            Enumerable.Range(roomIndex, hallwayIndex - roomIndex)
-                .Select(x => hallway[x])
-                .All(x => x == '.') :
-            Enumerable.Range(hallwayIndex + 1, roomIndex - hallwayIndex)
-                .Select(x => hallway[x])
-                .All(x => x == '.');
+        var range = hallwayIndex > roomIndex ?
+            Enumerable.Range(roomIndex, hallwayIndex - roomIndex):
+            Enumerable.Range(hallwayIndex + 1, roomIndex - hallwayIndex);
+        
+        var allEmpty = range.Select(x => hallway[x]).All(x => x == '.');
         return allEmpty;
     }
 
@@ -176,7 +176,6 @@ public class Day23
         var newHallway = UpdateAtIndex(hallway, hallwayIndex, charValue);
         var newRoom = UpdateAtIndex(rooms[room], pieceIndex, '.');
         rooms[room] = newRoom;
-
         var newBoard = new Board(newHallway, rooms[0], rooms[1], rooms[2], rooms[3]);
         var newCost = costs[board] + hallwayCost + roomCost;
         UpdateCosts(newBoard, newCost, costs);
@@ -197,7 +196,6 @@ public class Day23
         var newHallway = UpdateAtIndex(hallway, hallwayIndex, '.');
         var newRoom = UpdateAtIndex(rooms[room], pieceIndex, charValue);
         rooms[room] = newRoom;
-
         var newBoard = new Board(newHallway, rooms[0], rooms[1], rooms[2], rooms[3]);
         var newCost = costs[board] + hallwayCost + roomCost;
         UpdateCosts(newBoard, newCost, costs);
@@ -239,31 +237,6 @@ public class Day23
         }
 
         throw new ArgumentException(nameof(index));
-    }
-
-    static Board UpdateBoard(Board board, string newHallway, string newRoom, int room)
-    {
-        if (room == 0)
-        {
-            return new Board(newHallway, newRoom, board.room1, board.room2, board.room3);
-        }
-
-        if (room == 1)
-        {
-            return new Board(newHallway, board.room0, newRoom, board.room2, board.room3);
-        }
-
-        if (room == 2)
-        {
-            return new Board(newHallway, board.room0, board.room1, newRoom, board.room3);
-        }
-
-        if (room == 3)
-        {
-            return new Board(newHallway, board.room0, board.room1, board.room2, newRoom);
-        }
-
-        throw new ArgumentException(nameof(room));
     }
 
     static string UpdateAtIndex(string target, int index, char newValue)
