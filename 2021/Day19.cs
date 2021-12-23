@@ -24,7 +24,6 @@ public class Day19
     {
         var distances = new Distances();
         var beaconsFound = new HashSet<Point>();
-
        
         var origin = scannersInput.Keys.First();
         var queue = new Queue<int>();

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Numerics;
 using static Utils;
 
-
 public class Day21
 {
     public class Dice

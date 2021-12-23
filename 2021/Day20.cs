@@ -3,7 +3,6 @@ namespace _2021;
 using System.Diagnostics;
 using static Utils;
 
-
 public class Day20
 {
     [Fact]

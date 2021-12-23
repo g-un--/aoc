@@ -58,6 +58,15 @@ static class Utils
         }
     }
 
+    public static void MatchGroups(this string input, string pattern, Action<string[]> action)
+    {
+        var match = Regex.Match(input, pattern);
+        if (match.Success)
+        {
+            action(match.Groups.Values.Skip(1).Select(x => x.Value).ToArray());
+        }
+    }
+
     public static HashSet<T> Clone<T>(this HashSet<T> target) => new HashSet<T>(target);
 
     public static HashSet<T> IntersectClone<T>(this HashSet<T> chars, IEnumerable<T> target)
