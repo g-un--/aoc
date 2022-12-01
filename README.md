@@ -18,3 +18,9 @@ cd ./2021
 dotnet build
 dotnet test --filter day1
 ```
+* 2022 - Typescript
+```
+cd ./2022
+yarn install
+yarn test day1
+```
