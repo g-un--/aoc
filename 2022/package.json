@@ -1,7 +1,6 @@
 {
   "name": "aoc",
   "version": "1.0.0",
-  "type": "module",
   "repository": "git@github.com:g-un--/aoc.git",
   "author": "Gino Ungureanu <ginoungureanu.mail@gmail.com>",
   "license": "MIT",

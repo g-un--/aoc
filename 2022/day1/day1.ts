@@ -1,5 +1,5 @@
 function getCalories(input: string[]): number[] {
-  const calories = [];
+  const calories: number[] = [];
   let currentElfCalories = 0;
   for(const item of input) {
     if (item === '') {
