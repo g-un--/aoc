@@ -4,7 +4,7 @@ import { getInput } from '../utils'
 describe("2022/day1/part1", () => {
 
   test('input.txt', () => {
-    const input = getInput(__dirname); 
+    const input = getInput(__dirname);
     expect(part1(input)).toBe(67633);
   });
 
