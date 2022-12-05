@@ -1,9 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 
-export function getInput(dirname: string): string[] {
-    const input = fs.readFileSync(path.resolve(dirname, "./input.txt"), "utf-8").split("\n");
-    return input;
+export function getInput(dirname: string, fileName = "./input.txt"): string[] {
+    const input = fs.readFileSync(path.resolve(dirname, fileName), "utf-8");
+    return input.split("\n");
 }
 
 export function* repeat<T>(item: T, count: number) {
