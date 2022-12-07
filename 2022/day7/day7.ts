@@ -75,7 +75,7 @@ function buildSession(sessionItems: SessionItem[]) {
 }
 
 function getDirPath(dir: Dir) {
-  const pathToRoot = [];
+  const pathToRoot: string[] = [];
   let current: Dir | undefined = dir;
   while (current && current.name !== "/") {
     pathToRoot.unshift(current.name);
