@@ -15,7 +15,7 @@ describe("2022/day6/part1", () => {
 });
 
 
-describe("2022/day2/part2", () => {
+describe("2022/day6/part2", () => {
 
   test('exaple.txt', () => {
     expect(part2("mjqjpqmgbljsphdztnvjfqwrcgsmlb").position).toBe(19);
@@ -23,7 +23,7 @@ describe("2022/day2/part2", () => {
 
   test('input.txt', () => {
     const input = getInput(__dirname)[0];
-    expect(part2(input).position).toBe(2500);
+    expect(part2(input).position).toBe(2313);
   });
 
 });

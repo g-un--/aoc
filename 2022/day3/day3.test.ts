@@ -23,7 +23,7 @@ describe("2022/day3/part1", () => {
 
 });
 
-describe("2022/day2/part2", () => {
+describe("2022/day3/part2", () => {
   test('example', () => {
     expect(part2(example)).toBe(70);
   });

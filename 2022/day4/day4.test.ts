@@ -10,7 +10,7 @@ describe("2022/day4/part1", () => {
 
 });
 
-describe("2022/day2/part2", () => {
+describe("2022/day4/part2", () => {
 
   test('input.txt', () => {
     const input = getInput(__dirname);
