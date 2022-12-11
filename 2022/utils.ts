@@ -18,6 +18,17 @@ export function* range<T>(start: number, end: number) {
     }
 }
 
+export function getChunksOf(input: string[], numberOfItemsInChunk: number) {
+    const result: string[][] = [];
+    let index = 0;
+    while (index < input.length) {
+        const chunk = input.slice(index, index + numberOfItemsInChunk);
+        result.push(chunk);
+        index += numberOfItemsInChunk;
+    }
+    return result;
+}
+
 export function* getPermutations<T>(input: Set<T>): Iterable<T[]> {
     if (input.size === 0) {
         yield [];

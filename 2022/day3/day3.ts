@@ -1,3 +1,5 @@
+import { getChunksOf } from "../utils";
+
 function getCommonItemsInRucksack(input: string) {
   const firstPart = input.slice(0, input.length / 2);
   const secondPart = input.slice(input.length / 2);
@@ -12,17 +14,6 @@ function getIntersection(input: string[]) {
     intersection = [...new Set(common)].join();
   }
   return intersection;
-}
-
-function getChunksOf(input: string[], numberOfItemsInChunk: number) {
-  const result: string[][] = [];
-  let index = 0;
-  while (index < input.length) {
-    const chunk = input.slice(index, index + numberOfItemsInChunk);
-    result.push(chunk);
-    index += numberOfItemsInChunk;
-  }
-  return result;
 }
 
 function getPriority(input: string[]) {
