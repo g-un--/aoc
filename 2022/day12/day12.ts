@@ -36,23 +36,22 @@ function find(char: string, grid: string[][]): Position | undefined {
 
 function getKey(position: Position) { return `${position.row}-${position.column}` }
 
-function solve(queue: Position[], grid: string[][], costs: number[][]): Map<string, Position> {
+function solve(queue: Position[], grid: string[][], costs: number[][], reverse: boolean): Map<string, Position> {
   const paths = new Map<string, Position>();
-  const debug = new Set<string>();
   const gridSize = { rows: grid.length, columns: grid[0].length };
   while (queue.length > 0) {
     const position = queue.shift()!;
     for (const adjacentPosition of getAdjacentPositions(position)) {
       if (isValidPosition(adjacentPosition, gridSize)) {
         const heightCost = getHeightCost(position, adjacentPosition, grid);
-        if (heightCost > 1) continue;
+        if (heightCost > 1 && !reverse) continue;
+        if (heightCost < -1 && reverse) continue;
         const newCost = Math.abs(heightCost) + costs[position.row][position.column] + 1;
         if (newCost < costs[adjacentPosition.row][adjacentPosition.column]) {
           costs[adjacentPosition.row][adjacentPosition.column] = newCost;
           queue.push(adjacentPosition);
           const key = getKey(adjacentPosition);
           paths.set(key, position);
-          debug.add(grid[adjacentPosition.row][adjacentPosition.column]);
         }
       }
     }
@@ -78,7 +77,7 @@ export function part1(input: string[]): number {
   const end = find("E", grid)!;
   costs[start.row][start.column] = 0;
   const queue: Position[] = [start];
-  const paths = solve(queue, grid, costs);
+  const paths = solve(queue, grid, costs, false);
   const path = getPath(paths, end, [end]).reverse();
   return path.length - 1;
 }
@@ -86,18 +85,18 @@ export function part1(input: string[]): number {
 export function part2(input: string[]): number {
   const grid = input.map(line => line.replace("\r", "").split(""));
   const end = find("E", grid)!;
-  
+  const costs = grid.map(line => line.map(_ => 1_000_000));
+  costs[end.row][end.column] = 0;
+  const queue: Position[] = [end];
+  const paths = solve(queue, grid, costs, true);
+
   let minPath: Position[] = [];
   let minPathLength = 1_000_000;
   for(let row = 0; row < grid.length; row++) {
     for(let column = 0; column < grid[0].length; column++) {
       if (grid[row][column] === "a") {
-        const costs = grid.map(line => line.map(_ => 1_000_000));
-        costs[row][column] = 0;
-        const queue: Position[] = [{row, column}];
-        const paths = solve(queue, grid, costs);
-        const path = getPath(paths, end, [end]).reverse();
-        if (path.length < minPathLength && path[0].row === row && path[0].column === column) {
+        const path = getPath(paths, {row, column}, [{row, column}]).reverse();
+        if (path.length < minPathLength && path[0].row === end.row && path[0].column === end.column) {
           minPath = path;
           minPathLength = path.length;
         }
