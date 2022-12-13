@@ -1,7 +1,7 @@
 import { part1, part2 } from './day12';
 import { getInput } from '../utils'
 
-describe("2022/day11/part1", () => {
+describe("2022/day12/part1", () => {
 
   test('example.txt', () => {
     const input = getInput(__dirname, "./example.txt");
@@ -15,7 +15,7 @@ describe("2022/day11/part1", () => {
 
 });
 
-describe("2022/day11/part2", () => {
+describe("2022/day12/part2", () => {
 
   test('example.txt', () => {
     const input = getInput(__dirname, "./example.txt");
