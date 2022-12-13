@@ -1,37 +1,43 @@
 import { getChunksOf } from "../utils";
 
-type ArrayOfArrays = (number | ArrayOfArrays)[]
+export function checkPairs(left: Array<any>, right: Array<any>): boolean | undefined {
+  const maxLength = Math.max(left.length, right.length);
 
-export function checkPair(array1: ArrayOfArrays, array2: ArrayOfArrays): boolean {
-  const [first1, ...rest1] = array1;
-  const [first2, ...rest2] = array2;
+  for (let index = 0; index < maxLength; index++) {
+    const leftItem = left[index];
+    const rightItem = right[index];
 
-  if (first1 === undefined) return true;
-  if (first2 === undefined) return false;
+    if (leftItem === undefined) return true;
+    if (rightItem === undefined) return false;
 
-  if (typeof first1 === "number" && typeof first2 === "number") {
-    if (first1 > first2) return false;
-    else if (first1 < first2) return true;
-  } else if (Array.isArray(first1) && Array.isArray(first2)) {
-    if(!checkPair(first1, first2)) return false;
-  } else if (Array.isArray(first1) && typeof first2 === "number") {
-    if(!checkPair(first1, [first2])) return false;
-  } else if (typeof first1 === "number" && Array.isArray(first2)) {
-    if(!checkPair([first1], first2)) return false;
+    if (Number.isInteger(leftItem) && Number.isInteger(rightItem)) {
+      if (leftItem > rightItem) return false;
+      if (leftItem < rightItem) return true;
+      continue;
+    }
+
+    if (!Array.isArray(leftItem)) {
+      return checkPairs([leftItem], rightItem);
+    }
+
+    if (!Array.isArray(rightItem)) {
+      return checkPairs(leftItem, [rightItem]);
+    }
+
+    const result = checkPairs(leftItem, rightItem);
+    if (result !== undefined) return result;
   }
-
-  return checkPair(rest1, rest2);
-}
+};
 
 export function part1(input: string[]): number {
   const pairs = getChunksOf(input, 3);
   let index = 0;
   let sum = 0;
-  for(const pair of pairs) {
+  for (const pair of pairs) {
     index += 1;
-    const firstArray = <ArrayOfArrays>JSON.parse(pair[0]);
-    const secondArray = <ArrayOfArrays>JSON.parse(pair[1]);
-    if (checkPair(firstArray, secondArray)) {
+    const firstArray = JSON.parse(pair[0]);
+    const secondArray = JSON.parse(pair[1]);
+    if (checkPairs(firstArray, secondArray)) {
       sum += index;
     }
   }
@@ -39,5 +45,16 @@ export function part1(input: string[]): number {
 }
 
 export function part2(input: string[]): number {
-  return 0;
+  const setOfAvalablePackets = new Set<Array<any>>();
+  setOfAvalablePackets.add([[2]]);
+  setOfAvalablePackets.add([[6]]);
+  const pairs = input.map(line => line.replace("\r", "")).filter(line => line !== "");
+  const items = pairs.map(item => JSON.parse(item));
+  const dividerPacket1 = [[2]];
+  const dividerPacket2 = [[6]];
+  items.push(dividerPacket1, dividerPacket2);
+  items.sort((a, b) => checkPairs(a, b) ? -1 : 1);
+  const indexOfDividerPacket1 = items.indexOf(dividerPacket1) + 1;
+  const indexOfDividerPacket2 = items.indexOf(dividerPacket2) + 1;
+  return indexOfDividerPacket1 * indexOfDividerPacket2;
 }
