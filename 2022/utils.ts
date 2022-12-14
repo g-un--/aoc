@@ -6,6 +6,10 @@ export function getInput(dirname: string, fileName = "./input.txt"): string[] {
     return input.split("\n");
 }
 
+export function writeOutput(dirname: string, data: string, fileName = "./output.txt"): void {
+    fs.writeFileSync(path.resolve(dirname, fileName), data, "utf-8");
+}
+
 export function* repeat<T>(item: T, count: number) {
     for (let index = 0; index < count; index++) {
         yield item;
