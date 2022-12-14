@@ -1,6 +1,3 @@
-import { format } from "../grid";
-import { writeOutput } from "../utils"
-
 type Point = { row: number, column: number }
 
 function parseLine(input: string): Point[] {
@@ -56,7 +53,7 @@ function* generatePointsBetween(points: Point[]) {
   }
 }
 
-export function part1(input: string[]): number {
+function createGrid(input: string[]) {
   const grid = Array.from(Array(1000), () => Array.from(Array(1000), () => "."));
   const points = input.map(parseLine).map(points => [...generatePointsBetween(points)]).flatMap(point => point);
   const maxRow = Math.max(...points.map(point => point.row));
@@ -64,6 +61,12 @@ export function part1(input: string[]): number {
   for(const point of points) {
     grid[point.row][point.column] = "#";
   }
+
+  return { grid, maxRow };
+}
+
+export function part1(input: string[]): number {
+  const { grid, maxRow } = createGrid(input);
 
   let sandUnits = 0;
   const startPoint = { row: 0, column: 500 };
@@ -79,10 +82,29 @@ export function part1(input: string[]): number {
     }
   }
 
-  //writeOutput(__dirname, format(grid));
   return sandUnits;
 }
 
 export function part2(input: string[]): number {
-  return 0;
+  const { grid, maxRow } = createGrid(input);
+
+  for(let column = 0; column < grid[0].length; column++) {
+    grid[maxRow + 2][column] = "#";
+  }
+
+  let sandUnits = 0;
+  const startPoint = { row: 0, column: 500 };
+  let shouldAddSand = true;
+  while(shouldAddSand) {
+    const newSandUnit = {...startPoint};
+    fallPoint(newSandUnit, grid, maxRow + 1);
+    if (newSandUnit.row === startPoint.row && newSandUnit.column === startPoint.column) {
+      shouldAddSand = false;
+    } else {
+      grid[newSandUnit.row][newSandUnit.column] = "*";
+    }
+    sandUnits += 1;
+  }
+
+  return sandUnits;
 }

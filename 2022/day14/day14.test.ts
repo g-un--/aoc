@@ -17,19 +17,19 @@ describe("2022/day14/part1", () => {
   
 });
 
-/*
+
 describe("2022/day14/part2", () => {
 
   test('example.txt', () => {
     const input = getInput(__dirname, "./example.txt");
-    expect(part2(input)).toBe(140);
+    expect(part2(input)).toBe(93);
   });
 
 
   test('input.txt', () => {
     const input = getInput(__dirname);
-    expect(part2(input)).toBe(21614);
+    expect(part2(input)).toBe(29044);
   });
 
 });
-*/
+
