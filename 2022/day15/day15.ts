@@ -1,7 +1,6 @@
-import { match } from "assert";
-
 type Point = { row: number, column: number }
 type Pair = { sensor: Point, beacon: Point, distance: number };
+type Interval = { start: number, end: number };
 
 function getDistance({ row: row1, column: column1 }: Point, { row: row2, column: column2 }: Point) {
   return Math.abs(row1 - row2) + Math.abs(column1 - column2);
@@ -16,52 +15,95 @@ function parseLine(input: string): Pair {
   const [_, sensorX, sensorY] = matches[0];
   const [__, beaconX, beaconY] = matches[1];
 
-  const sensor =  { row: Number(sensorY), column: Number(sensorX) };
-  const beacon =  { row: Number(beaconY), column: Number(beaconX) };
+  const sensor = { row: Number(sensorY), column: Number(sensorX) };
+  const beacon = { row: Number(beaconY), column: Number(beaconX) };
   const distance = getDistance(sensor, beacon);
   return { sensor, beacon, distance };
 }
 
-export function part1(input: string[], targetRow: number): number {
-  const pairs = input.map(parseLine);
-  const columns = pairs.map(pair => [pair.beacon.column - pair.distance, pair.sensor.column + pair.distance]).flatMap(item => item);
-  const minColumn = Math.min(...columns);
-  const maxColumn = Math.max(...columns);
-  let total = 0;
-  for (let column= minColumn; column<=maxColumn; column++) {
-    const point = { column, row: targetRow };
-    const beaconCannotBePresent = pairs.some(pair => {
-      const distanceBetweenPointAndSensor = getDistance(point, pair.sensor);
-      if (equal(point, pair.sensor) || equal(point, pair.beacon)) return false;
-      return distanceBetweenPointAndSensor <= pair.distance;
-    });
-    if (beaconCannotBePresent) {
-      total += 1;
+function getProjectionOnRow(pair: Pair, row: number): Interval | undefined {
+  const rowsDistance = Math.abs(pair.sensor.row - row);
+  const projectedDistance = pair.distance - rowsDistance;
+  if (projectedDistance >= 0) {
+    return { start: pair.sensor.column - projectedDistance, end: pair.sensor.column + projectedDistance };
+  }
+}
+
+function mergeInterval(intervals: Interval[], newInterval: Interval) {
+  let index = 0;
+  let found = false;
+  for (const interval of intervals) {
+    if (interval.start <= newInterval.end && interval.end >= newInterval.start) {
+      const start = Math.min(interval.start, newInterval.start);
+      const end = Math.max(interval.end, newInterval.end);
+      found = true;
+      intervals.splice(index, 1);
+      mergeInterval(intervals, { start, end });
+      break;
+    }
+    index += 1;
+  }
+  if (!found) {
+    intervals.push(newInterval);
+  }
+}
+
+function getIntersection(interval1: Interval, interval2: Interval): Interval | undefined {
+  if (interval1.start <= interval2.end && interval1.end >= interval2.start) {
+    return {
+      start: Math.max(interval1.start, interval2.start),
+      end: Math.min(interval1.end, interval2.end)
     }
   }
-  return total;
+}
+
+export function part1(input: string[], targetRow: number): number {
+  const pairs = input.map(parseLine);
+  const intervals: Interval[] = [];
+  for (const pair of pairs) {
+    const projection = getProjectionOnRow(pair, targetRow);
+    if (projection) {
+      mergeInterval(intervals, projection);
+    }
+  }
+  const total = intervals.reduce((sum, interval) => sum + (interval.end - interval.start + 1), 0);
+  const itemsInIntervals =
+    pairs
+      .map(item => [item.beacon, item.sensor])
+      .flatMap(item => item)
+      .filter(
+        item => item.row === targetRow &&
+          intervals.some(interval => interval.start <= item.column && interval.end >= item.column)
+      ).map(item => `${item.row}-${item.column}`);
+  return total - new Set(itemsInIntervals).size;
 }
 
 export function part2(input: string[], target: number): number {
   const pairs = input.map(parseLine);
-  let foundPoint: Point | null = null;
+  const targetInterval = { start: 0, end: target };
+  let foundPoint: Point | undefined;
   for (let row = 0; row <= target; row++) {
-    for (let column= 0; column <= target; column++) {
-      const point = { column, row };
-      const beaconCanBePresent = pairs.every(pair => {
-        const distanceBetweenPointAndSensor = getDistance(point, pair.sensor);
-        if (equal(point, pair.sensor) || equal(point, pair.beacon)) return false;
-        return distanceBetweenPointAndSensor > pair.distance;
-      });
-      if (beaconCanBePresent) {
-        console.log(`Found point row: ${point.row}, column: ${point.column}`);
-        foundPoint = point;
-        break;
+    const intervals: Interval[] = [];
+    for (const pair of pairs) {
+      const projection = getProjectionOnRow(pair, row);
+      if (projection) {
+        mergeInterval(intervals, projection);
       }
     }
-    if (foundPoint) {
-      break;
+    const total = intervals
+      .map(interval => getIntersection(interval, targetInterval))
+      .filter(item => item !== undefined)
+      .reduce((sum, interval) => sum + (interval!.end - interval!.start + 1), 0);
+    if (total < target + 1) {
+      if (intervals.length > 1) {
+        foundPoint = { row, column: intervals[0].end + 1 };
+      } else if (intervals[0].start === 0) {
+        foundPoint = { row, column: intervals[0].end + 1 };
+      } else {
+        foundPoint = { row, column: intervals[0].start - 1 };
+      }
     }
   }
+
   return foundPoint!.column * 4000000 + foundPoint!.row;
 }

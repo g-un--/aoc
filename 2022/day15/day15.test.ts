@@ -28,7 +28,7 @@ describe("2022/day15/part2", () => {
   
   test('input.txt', () => {
     const input = getInput(__dirname);
-    expect(part2(input, 4000000)).toBe(29044);
+    expect(part2(input, 4000000)).toBe(11482462818989);
   });
   
 });
