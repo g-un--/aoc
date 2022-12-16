@@ -26,21 +26,31 @@ function dijkstra(start: string, map: Map<string, Valve>) {
   return costs;
 }
 
-function *solve(map: Map<string, Valve>, start: string, opened: Set<string>, time: number, total: number): Iterable<number> {
-  const costs = dijkstra(start, map);
-  const entriesToCheck = [...costs.entries()].filter(([key, _]) => !opened.has(key));
-  for(const [key, value] of entriesToCheck) {
+export const cache = new Map<string, Map<string, number>>();
+function memoDijkstra(start: string, map: Map<string, Valve>) {
+  const result = cache.get(start);
+  if (!result) {
+    const newResult = dijkstra(start, map);
+    cache.set(start, newResult);
+    return newResult;
+  }
+  return result;
+}
+
+function *solve(map: Map<string, Valve>, start: string, opened: Set<string>, time: number, total: number, maxTime: number): Iterable<[number, Set<string>]> {
+  const costs = memoDijkstra(start, map);
+  const entriesToCheck = [...costs.entries()].filter(([key, value]) => !opened.has(key) && map.get(key)!.rate > 0);
+  while (entriesToCheck.length > 0) {
+    const [key, value] = entriesToCheck.shift()!;
     const timeAfterKeyIsOpened = time + value + 1;
-    const flow = map.get(key)!.rate * (30 - timeAfterKeyIsOpened);
-    if (flow > 0) {
-      if (timeAfterKeyIsOpened < 30) {
-        const newOpened = new Set<string>(opened).add(key);
-        yield* solve(map, key, newOpened, time + value + 1, total + flow);
-      } else {
-        yield total;
-      }
+    const valve = map.get(key);
+    const flow = valve!.rate * (maxTime - timeAfterKeyIsOpened);
+    if (timeAfterKeyIsOpened < maxTime) {
+      const newOpened = new Set<string>(opened).add(key);
+      yield [total + flow, newOpened];
+      yield* solve(map, key, newOpened, timeAfterKeyIsOpened, total + flow, maxTime);
     } else {
-      yield total;
+      yield [total, opened];
     }
   }
 }
@@ -49,7 +59,7 @@ export function part1(input: string[]): number {
   const valves = input.map(parseLine);
   const map = new Map(valves.map(valve => [valve.id, valve]));
   let max = 0;
-  for(const maxItem of solve(map, "AA", new Set<string>(), 0, 0)) {
+  for(const [maxItem, _] of solve(map, "AA", new Set<string>(), 0, 0, 30)) {
     if (maxItem > max) {
       max = maxItem;
     }
@@ -58,5 +68,18 @@ export function part1(input: string[]): number {
 }
 
 export function part2(input: string[]): number {
-  return 0;
+  const valves = input.map(parseLine);
+  const map = new Map(valves.map(valve => [valve.id, valve]));
+  const valvesWithFlow = [...map.values()].filter(item => item.rate > 0).length;
+  let max = 0;
+  for(const [maxItem, set] of solve(map, "AA", new Set<string>(), 0, 0, 26)) {
+    if (set.size >= (valvesWithFlow / 2 - 1) && set.size <= (valvesWithFlow / 2 + 1)) {
+      for(const [maxItem2, _] of solve(map, "AA", set, 0, 0, 26)) {
+        if (maxItem + maxItem2 > max) {
+          max = maxItem + maxItem2;
+        }
+      }
+    }
+  }
+  return max;
 }

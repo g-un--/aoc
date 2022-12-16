@@ -1,8 +1,12 @@
-import { part1, part2 } from './day16';
+import { part1, part2, cache } from './day16';
 import { getInput } from '../utils'
 
 
 describe("2022/day16/part1", () => {
+
+  beforeEach(() => {
+    cache.clear();
+  });
 
   test('example.txt', () => {
     const input = getInput(__dirname, "./example.txt");
@@ -18,17 +22,21 @@ describe("2022/day16/part1", () => {
 });
 
 
-describe("2022/day15/part2", () => {
+describe("2022/day16/part2", () => {
+  
+  beforeEach(() => {
+    cache.clear();
+  });
 
   test('example.txt', () => {
     const input = getInput(__dirname, "./example.txt");
-    expect(part2(input)).toBe(56000011);
+    expect(part2(input)).toBe(1707);
   });
 
   
   test('input.txt', () => {
     const input = getInput(__dirname);
-    expect(part2(input)).toBe(11482462818989);
+    expect(part2(input)).toBe(2455);
   });
   
 });
