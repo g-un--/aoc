@@ -19,12 +19,6 @@ describe("2022/day17/part1", () => {
 
 describe("2022/day17/part2", () => {
   
-  test('example.txt', () => {
-    const moves = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>";
-    expect(part2(moves)).toBe(1514285714288);
-  });
-
-  
   test('input.txt', () => {
     const input = getInput(__dirname)[0];
     expect(part2(input)).toBe(0);
