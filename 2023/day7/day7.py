@@ -1,5 +1,5 @@
 from utils import getLines
-from functools import reduce, cmp_to_key
+from functools import cmp_to_key
 from collections import Counter
 
 def getHand(line):

@@ -1,7 +1,5 @@
 from utils import getLines
-from functools import reduce, cmp_to_key
 from itertools import cycle
-from collections import Counter
 from math import lcm
 
 def getSteps(line):
