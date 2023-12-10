@@ -15,16 +15,6 @@ def getNeighbours(pipe):
             (row, column+1), 
             (row+1, column + 1), (row+1, column), (row+1, column-1), 
             (row, column-1)]
-    
-def getPairsOfNeighbours(neighbours):
-    return [(a,b) for a,b in zip(neighbours, neighbours[1:])]
-
-def arePairsConnected(twoPipes, field):
-    pipe1, pipe2 = twoPipes
-    pipe1Neighbours = set(getConnectedPipes(pipe1, field))
-    pepe2Neighbours = set(getConnectedPipes(pipe2, field))
-    intersection = pipe1Neighbours.intersection(pepe2Neighbours)
-    return len(intersection) > 0
 
 def getConnectedPipes(pipe, field):
     row, column = pipe
