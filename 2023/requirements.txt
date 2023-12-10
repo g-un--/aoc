@@ -1,3 +1,4 @@
 pytest
 portion
 numpy
+matplotlib

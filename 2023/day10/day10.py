@@ -2,6 +2,7 @@ from utils import getLines
 from math import ceil
 import numpy as np
 import sys as sys
+from matplotlib.path import Path
 
 sys.setrecursionlimit(20000)
 
@@ -15,6 +16,16 @@ def getNeighbours(pipe):
             (row+1, column + 1), (row+1, column), (row+1, column-1), 
             (row, column-1)]
     
+def getPairsOfNeighbours(neighbours):
+    return [(a,b) for a,b in zip(neighbours, neighbours[1:])]
+
+def arePairsConnected(twoPipes, field):
+    pipe1, pipe2 = twoPipes
+    pipe1Neighbours = set(getConnectedPipes(pipe1, field))
+    pepe2Neighbours = set(getConnectedPipes(pipe2, field))
+    intersection = pipe1Neighbours.intersection(pepe2Neighbours)
+    return len(intersection) > 0
+
 def getConnectedPipes(pipe, field):
     row, column = pipe
     match field[pipe]:
@@ -53,15 +64,37 @@ def findCycle(start, field, stack):
                     return findCycle(pipe, field, stack)
                 elif field[pipe] == 'S' and len(stack) > 2:
                     return findCycle(pipe, field, stack) 
-             
-def part1():
+                
+def countPointsInside(field, cycle):
+    p = Path(cycle)
+    rows,columns = np.shape(field)
+    sum = 0
+    for i in range(0, rows):
+        for j in range(0, columns):
+            if (i, j) in cycle:
+                continue
+            if p.contains_point((i,j)):
+                sum += 1
+    return sum
+
+def getFieldAndCycle():
     lines = getLines(__file__)
     pipes = list(map(getPipes, lines))
     field = np.array(pipes)
     row, column = np.where(field == 'S')
     cycle = findCycle((row[0], column[0]), field, [])
+    return field,cycle
+
+def part1():
+    _, cycle = getFieldAndCycle()
     return ceil(len(cycle)/2)
+
+def part2():
+    field, cycle = getFieldAndCycle()
+    return countPointsInside(field, cycle)
 
 def test_part_1():
     assert part1() == 6951
     
+def test_part_2():
+    assert part2() == 563
