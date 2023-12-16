@@ -44,7 +44,9 @@ def getDirections(cell, direction):
             case "left" | "right":
                 return ["up", "down"]  
             
-def moveBeam(array, startRow, startColumn, startDirection, result, seen):
+def moveBeam(array, startRow, startColumn, startDirection):
+    result = set()
+    seen = set()
     queue = [(startRow, startColumn, startDirection)]
     rows, columns = np.shape(array)
     
@@ -74,13 +76,13 @@ def moveBeam(array, startRow, startColumn, startDirection, result, seen):
                 continue
             
             queue.append((newRow, newColumn, newDirection))  
+            
+    return result
         
 def part1():
     lines = getLines(__file__)
     array = np.array(list(map(getline, lines)))
-    result = set()
-    seen = set()
-    moveBeam(array, 0, 0, "right", result, seen)
+    result = moveBeam(array, 0, 0, "right")
     return len(result)
 
 def part2():
@@ -90,26 +92,18 @@ def part2():
     
     max = 0
     for row in range(0, rows):
-        result = set()
-        seen = set()
-        moveBeam(array, row, 0, "right", result, seen)
-        result = set()
-        seen = set()
+        result = moveBeam(array, row, 0, "right")
         if len(result) > max:
             max = len(result)
-        moveBeam(array, row, columns - 1, "left", result, seen)
+        result = moveBeam(array, row, columns - 1, "left")
         if len(result) > max:
             max = len(result)
             
     for column in range(0, columns):
-        result = set()
-        seen = set()
-        moveBeam(array, 0, column, "down", result, seen)
-        result = set()
-        seen = set()
+        result = moveBeam(array, 0, column, "down")
         if len(result) > max:
             max = len(result)
-        moveBeam(array, rows - 1, column, "up", result, seen)
+        result = moveBeam(array, rows - 1, column, "up")
         if len(result) > max:
             max = len(result)    
     return max
