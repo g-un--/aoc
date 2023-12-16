@@ -118,4 +118,4 @@ def test_part_1():
     assert part1() == 6605
     
 def test_part_2():
-    assert part2() == 51
+    assert part2() == 6766
