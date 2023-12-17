@@ -29,7 +29,7 @@ def getNextPoint(point, direction):
         case "right":
             return (row, column + 1)
         
-def findDistances(array):
+def findDistances(array, validateDirection):
     queue = [(0, 0, 0, "right", 1)]
     rows, columns = np.shape(array)
     seen = {}
@@ -42,21 +42,43 @@ def findDistances(array):
         for nextDirection in nextDirections:
             nextRow, nextColumn = getNextPoint((row, column), nextDirection)
             nextSteps = steps + 1 if nextDirection == direction else 1
+            isValidDirection = validateDirection(direction, steps, nextDirection, nextSteps)
             
-            if 0 <= nextRow < rows and 0 <= nextColumn < columns and nextSteps <= 3:
+            if 0 <= nextRow < rows and 0 <= nextColumn < columns and isValidDirection:
                 heapq.heappush(queue, (dist + array[nextRow, nextColumn], nextRow, nextColumn, nextDirection, nextSteps))
     return seen
-        
+
+def findMinFor(distances, rowToFind, columnToFind, stepsCondition):
+    min = sys.maxsize
+    for (row, column, _, steps), dist in distances.items():
+        if stepsCondition(steps) and row == rowToFind and column == columnToFind and dist < min:
+            min = dist
+    return min
+
 def part1():
     lines = getLines(__file__)
     array = np.array(list(map(getline, lines)))
     rows, columns = np.shape(array)
-    result = findDistances(array)
-    min = sys.maxsize
-    for (row, column, _,_), dist in result.items():
-        if row == rows - 1 and column == columns -1 and dist < min:
-            min = dist
+    validateDirection = lambda direction, steps, nextDirection, nextSteps: nextSteps <= 3
+    result = findDistances(array, validateDirection)
+    stepsCondition = lambda steps: True
+    min = findMinFor(result, rows - 1, columns - 1, stepsCondition)
+    return min
+
+def part2():
+    lines = getLines(__file__)
+    array = np.array(list(map(getline, lines)))
+    rows, columns = np.shape(array)
+    validateDirection = lambda direction, steps, nextDirection, nextSteps: nextSteps <= 10 and ((steps >= 4 and direction != nextDirection) or (direction == nextDirection))
+    result = findDistances(array, validateDirection)
+    stepsCondition = lambda steps: steps >= 4
+    min = findMinFor(result, rows - 1, columns - 1, stepsCondition)
     return min
         
 def test_part_1():
-    assert part1() == 1039
+    assert part1() == 102
+    #assert part1() == 1039
+    
+def test_part_2():
+    assert part2() == 94
+    #assert part2() == 71
