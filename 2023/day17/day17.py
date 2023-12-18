@@ -30,7 +30,7 @@ def getNextPoint(point, direction):
             return (row, column + 1)
         
 def findDistances(array, validateDirection):
-    queue = [(0, 0, 0, "right", 1)]
+    queue = [(0, 0, 0, "right", 0), (0, 0, 0, "down", 0)]
     rows, columns = np.shape(array)
     seen = {}
     while queue:
@@ -76,9 +76,7 @@ def part2():
     return min
         
 def test_part_1():
-    assert part1() == 102
-    #assert part1() == 1039
+    assert part1() == 1039
     
 def test_part_2():
-    assert part2() == 94
-    #assert part2() == 71
+    assert part2() == 1201
