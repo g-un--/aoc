@@ -1,7 +1,7 @@
-from utils import getLines
+from utils import getLines, splitLinesIntoChunks
 import numpy as np
 import re
-from functools import partial
+import portion as P
 
 def getMap():
     return {
@@ -10,48 +10,40 @@ def getMap():
         "a": 2,
         "s": 3
     }
-    
-def splitLinesIntoChunks(lines):
-    result = []
-    chunk = []
-    for line in lines:
-        if line:
-            chunk.append(line)
-        else:
-            if len(chunk) > 0:
-                result.append(chunk)
-            chunk = []   
-            
-    if len(chunk):
-        result.append(chunk)
-    
-    return result
 
-def executePipeline(lambdas, value):
-    for lambdaInstr in lambdas:
-        result = lambdaInstr(value)
+def executePipeline(intervals, object):
+    for interval in intervals:
+        variable, intervalRange, nextInstr = interval
+        result = object[variable] in intervalRange
         if result:
-            return result
+            return nextInstr
         
-def executeProgram(program, value):
+def executeProgram(program, object):
     result = "in"
     while result != 'A' and result != 'R':
-        result = executePipeline(program[result], value)
+        result = executePipeline(program[result], object)
     return result
 
-def buildLambda(variable, value, comparison, nextInstr):
-    mapOfVariables = getMap()
+def buildIntervals(variable, value, comparison, nextInstr):
     match comparison:
         case "<":
-            return lambda x: nextInstr if x[mapOfVariables[variable]] < value else None
+            return (variable, P.closed(1, value-1), nextInstr)
         case ">":
-            return lambda x: nextInstr if x[mapOfVariables[variable]] > value else None
-        
+            return (variable, P.closed(value+1, 4000), nextInstr)
+
+def buildDefaultIntervals(nextInstr):
+    return [
+        ("x", P.closed(1, 4000), nextInstr),
+        ("m", P.closed(1, 4000), nextInstr),
+        ("a", P.closed(1, 4000), nextInstr),
+        ("s", P.closed(1, 4000), nextInstr)
+    ]    
+                
 def parseInstr(line):
     name = re.search('[^{]*', line).group()
     instrsString = re.search('{[^}]*', line).group()[1:]
     instrs = instrsString.split(",")
-    lambdas = []
+    intervals = []
     
     for instr in instrs[:-1]:
         parts = instr.split(":")
@@ -60,13 +52,17 @@ def parseInstr(line):
         variable = re.search("[xmas]", condition).group()
         value = int(re.search(r"\d+", condition).group())
         conditionText = re.search("[<>]", condition).group()
-        lambdas.append(buildLambda(variable, value, conditionText, nextInstr))
-    lambdas.append(lambda x: instrs[-1])
-    return name, lambdas
+        intervals.append(buildIntervals(variable, value, conditionText, nextInstr))
+    intervals.extend(buildDefaultIntervals(instrs[-1]))
+    return name, intervals
 
 def parseObject(line):
-    values = re.findall(r"\d+", line)
-    return tuple(list(map(int, values)))
+    values = re.findall(r"[xmas]=\d+", line)
+    result = {}
+    for value in values:
+        parts = value.split("=")
+        result[parts[0]] = int(parts[1])
+    return result
         
 def part1():
     lines = getLines(__file__)
@@ -85,7 +81,7 @@ def part1():
     for object in objects:
         result = executeProgram(program, object)
         if result == 'A':
-            total += sum(object)
+            total += sum(object.values())
     # x m a s
     return total
 

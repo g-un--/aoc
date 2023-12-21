@@ -1,4 +1,4 @@
-from utils import getLines
+from utils import getLines, splitLinesIntoChunks
 import sys
 import portion as P
 
@@ -41,22 +41,6 @@ def getDestinationIntervals(numberRange, map):
             
     oneToOne = numberRange - intersections
     return destinations | oneToOne
-
-def splitLinesIntoChunks(lines):
-    result = []
-    chunk = []
-    for line in lines:
-        if line:
-            chunk.append(line)
-        else:
-            if len(chunk) > 0:
-                result.append(chunk)
-            chunk = []   
-            
-    if len(chunk):
-        result.append(chunk)
-    
-    return result
 
 def splitListIntoChunksOfSize(numbers, chunkSize):      
     for i in range(0, len(numbers), chunkSize):  

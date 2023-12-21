@@ -1,25 +1,9 @@
-from utils import getLines
+from utils import getLines, splitLinesIntoChunks
 import numpy as np
 
 def getRow(line):
     row = [1 if n == '#' else 0 for n in line]
     return row
-
-def splitLinesIntoChunks(lines):
-    result = []
-    chunk = []
-    for line in lines:
-        if line:
-            chunk.append(line)
-        else:
-            if len(chunk) > 0:
-                result.append(chunk)
-            chunk = []   
-            
-    if len(chunk):
-        result.append(chunk)
-    
-    return result
 
 def findDiffCount(array1, array2):
     columns = len(array1)
