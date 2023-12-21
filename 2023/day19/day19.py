@@ -1,15 +1,6 @@
 from utils import getLines, splitLinesIntoChunks
-import numpy as np
 import re
 import portion as P
-
-def getMap():
-    return {
-        "x": 0,
-        "m": 1,
-        "a": 2,
-        "s": 3
-    }
 
 def executePipeline(intervals, object):
     for interval in intervals:
@@ -17,6 +8,38 @@ def executePipeline(intervals, object):
         result = object[variable] in intervalRange
         if result:
             return nextInstr
+        
+def yieldObjects(intervals, object):
+    for interval in intervals:
+        variable, intervalRange, nextInstr = interval
+        result = object[variable] & intervalRange
+        if not result.empty:
+            newObject = dict(object)
+            newObject[variable] = result
+            yield (newObject, nextInstr)
+            
+            toContinue = object[variable] - result
+            if toContinue.empty:
+                break
+            object[variable] = toContinue
+            
+def yieldProgramObjects(program):
+    object = {
+        "x": P.closed(1, 4000),
+        "m": P.closed(1, 4000),
+        "a": P.closed(1, 4000),
+        "s": P.closed(1, 4000)
+    }
+    queue = [(object, program["in"])]
+    result = []
+    while queue:
+        obj, instrs = queue.pop(0)
+        for newObj, instr in yieldObjects(instrs, obj):
+            if instr == 'A':
+                result.append(newObj)
+            elif instr != 'R':
+                queue.append((newObj, program[instr]))
+    return result
         
 def executeProgram(program, object):
     result = "in"
@@ -71,8 +94,8 @@ def part1():
     instructions = chunks[0]
     program = {}
     for instr in instructions:
-        name, lambdas = parseInstr(instr)
-        program[name] = lambdas
+        name, intervals = parseInstr(instr)
+        program[name] = intervals
         
     values = chunks[1]
     objects = list(map(parseObject, values))
@@ -85,5 +108,28 @@ def part1():
     # x m a s
     return total
 
+def part2():
+    lines = getLines(__file__)
+    chunks = splitLinesIntoChunks(lines)
+    
+    instructions = chunks[0]
+    program = {}
+    for instr in instructions:
+        name, intervals = parseInstr(instr)
+        program[name] = intervals
+        
+    result = list(yieldProgramObjects(program))
+    total = 0
+    for obj in result:
+        x = sum(1 for _ in P.iterate(obj["x"], step=1))
+        m = sum(1 for _ in P.iterate(obj["m"], step=1))
+        a = sum(1 for _ in P.iterate(obj["a"], step=1))
+        s = sum(1 for _ in P.iterate(obj["s"], step=1))
+        total += x * m * a * s
+    return total
+
 def test_part_1():
     assert part1() == 352052
+    
+def test_part_2():
+    assert part2() == 116606738659695
