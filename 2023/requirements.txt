@@ -1,4 +1,0 @@
-pytest
-portion
-numpy
-matplotlib

@@ -21,12 +21,11 @@ dotnet test --filter day1
 * 2022 - Typescript
 ```
 cd ./2022
-yarn install
-yarn test day1
+bun install
+bun test ./day1
 ```
 * 2023 - Python
 ```
 cd ./2023
-pip install -r ./requirements.txt
-py -m pytest -v ./day1/day1.py
+uv run pytest -v ./day1
 ```
