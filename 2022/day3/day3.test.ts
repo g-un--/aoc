@@ -1,5 +1,6 @@
 import { part1, part2 } from './day3';
 import { getInput } from '../utils'
+import { describe, test, expect } from 'bun:test'
 
 const example = [
   "vJrwpWtwJgWrhcsFMMfFFhFp",

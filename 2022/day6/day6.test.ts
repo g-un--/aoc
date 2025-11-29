@@ -1,5 +1,6 @@
 import { part1, part2 } from './day6';
 import { getInput } from '../utils'
+import { describe, test, expect } from 'bun:test'
 
 describe("2022/day6/part1", () => {
 

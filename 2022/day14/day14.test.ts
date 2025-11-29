@@ -1,6 +1,6 @@
 import { part1, part2 } from './day14';
 import { getInput } from '../utils'
-
+import { describe, test, expect } from 'bun:test'
 
 describe("2022/day14/part1", () => {
 
@@ -9,12 +9,12 @@ describe("2022/day14/part1", () => {
     expect(part1(input)).toBe(24);
   });
 
-  
+
   test('input.txt', () => {
     const input = getInput(__dirname);
     expect(part1(input)).toBe(979);
   });
-  
+
 });
 
 
