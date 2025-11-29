@@ -9,7 +9,6 @@ public class Day1
         var content = await ReadInputLines(nameof(Day1));
         var numbers = content.Select(x => int.Parse(x));
         var result = numbers.Sum();
-        Console.WriteLine($"Part1: {result}");
         Assert.Equal(406, result);
     }
 
@@ -30,7 +29,6 @@ public class Day1
             }
             frequencies.Add(current);
         }
-        Console.WriteLine($"Part2: {current}");
         Assert.Equal(312, current);
     }
 }
