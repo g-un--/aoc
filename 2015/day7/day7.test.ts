@@ -1,20 +1,21 @@
 import { part1, part2 } from './day7';
 import { getInput } from '../utils'
+import { describe, test, expect } from 'bun:test'
 
 describe("2015/day7/part1", () => {
 
   test('example', () => {
     const variables =
-        part1([
-            "123 -> x", 
-            "456 -> y",
-            "x AND y -> d",
-            "x OR y -> e",
-            "x LSHIFT 2 -> f",
-            "y RSHIFT 2 -> g",
-            "NOT x -> h",
-            "NOT y -> i"]);
-    
+      part1([
+        "123 -> x",
+        "456 -> y",
+        "x AND y -> d",
+        "x OR y -> e",
+        "x LSHIFT 2 -> f",
+        "y RSHIFT 2 -> g",
+        "NOT x -> h",
+        "NOT y -> i"]);
+
     expect(variables.get("x")).toBe(123);
     expect(variables.get("y")).toBe(456);
     expect(variables.get("d")).toBe(72);
@@ -25,19 +26,19 @@ describe("2015/day7/part1", () => {
     expect(variables.get("i")).toBe(65079);
   });
 
-  
+
   test('input.txt', () => {
-    const input = getInput(__dirname); 
+    const input = getInput(__dirname);
     expect(part1(input).get("a")).toBe(956);
   });
-  
+
 });
 
 
 describe("2015/day7/part2", () => {
 
   test('input.txt', () => {
-    const input = getInput(__dirname); 
+    const input = getInput(__dirname);
     expect(part2(input).get("a")).toBe(40149);
   });
 

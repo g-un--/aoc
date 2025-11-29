@@ -1,11 +1,12 @@
 import { part1, part2 } from './day8';
 import { getInput } from '../utils'
+import { describe, test, expect } from 'bun:test'
 
 const example = [
-    "\"\"", 
-    "\"abc\"",
-    "\"aaa\\\"aaa\"",
-    "\"\\x27\""
+  "\"\"",
+  "\"abc\"",
+  "\"aaa\\\"aaa\"",
+  "\"\\x27\""
 ];
 
 describe("2015/day8/part1", () => {
@@ -14,24 +15,24 @@ describe("2015/day8/part1", () => {
     expect(part1(example)).toBe(12);
   });
 
-  
+
   test('input.txt', () => {
-    const input = getInput(__dirname); 
+    const input = getInput(__dirname);
     expect(part1(input)).toBe(1342);
   });
-  
+
 });
 
 describe("2015/day8/part2", () => {
 
-    test('example', () => {
-      expect(part2(example)).toBe(19);
-    });
-  
+  test('example', () => {
+    expect(part2(example)).toBe(19);
+  });
 
-    test('input.txt', () => {
-      const input = getInput(__dirname); 
-      expect(part2(input)).toBe(2074);
-    });
-    
+
+  test('input.txt', () => {
+    const input = getInput(__dirname);
+    expect(part2(input)).toBe(2074);
+  });
+
 });

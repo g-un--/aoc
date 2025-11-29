@@ -1,5 +1,6 @@
 import { part1, part2 } from './day1';
 import { getInput } from '../utils'
+import { describe, test, expect } from 'bun:test'
 
 describe("2015/day1/part1", () => {
 
@@ -12,8 +13,8 @@ describe("2015/day1/part1", () => {
   });
 
   test('input.txt', () => {
-    const input = getInput(__dirname)[0]; 
-    expect(part1(input)).toBe("138");
+    const input = getInput(__dirname)[0];
+    expect(part1(input!)).toBe("138");
   });
 
 });
@@ -30,7 +31,7 @@ describe("2015/day1/part2", () => {
 
   test('input.txt', () => {
     const input = getInput(__dirname)[0];
-    expect(part2(input)).toBe("1771");
+    expect(part2(input!)).toBe("1771");
   });
 
 });

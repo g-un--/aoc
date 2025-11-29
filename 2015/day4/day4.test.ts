@@ -1,4 +1,5 @@
 import { part1, part2 } from './day4';
+import { describe, test, expect } from 'bun:test'
 
 describe("2015/day4/part1", () => {
 
@@ -13,13 +14,13 @@ describe("2015/day4/part1", () => {
   test('ckczppom', () => {
     expect(part1("ckczppom")).toBe("117946");
   });
-  
+
 });
 
 describe("2015/day4/part2", () => {
 
-    test('ckczppom', () => {
-      expect(part2("ckczppom")).toBe("3938038");
-    });
-    
+  test('ckczppom', () => {
+    expect(part2("ckczppom")).toBe("3938038");
+  });
+
 });

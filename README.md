@@ -3,8 +3,8 @@ https://adventofcode.com/
 * 2015 - Typescript
 ```
 cd ./2015
-yarn install
-yarn test day1
+bun install
+bun test ./day1
 ```
 * 2018 - C#
 ```
