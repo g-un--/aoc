@@ -1,5 +1,4 @@
 from utils import getLines
-from collections import Counter
 
 def part1(input="input.txt"):
     lines = getLines(__file__, input)
@@ -48,7 +47,6 @@ def test_part2_example():
 def test_part1():
     result = part1()
     assert result == 359
-
 
 def test_part2():
     result = part2()
