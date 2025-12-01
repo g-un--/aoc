@@ -1,7 +1,7 @@
 from utils import getLines
 
-def part1():
-    lines = getLines(__file__)
+def part1(input="input.txt"):
+    lines = getLines(__file__, input)
     ops = [(line[0], int(line[1:])) for line in lines]
     current = 50
     password = 0
@@ -11,8 +11,8 @@ def part1():
         password += 1 if current == 0 else 0
     return password
 
-def part2():
-    lines = getLines(__file__)
+def part2(input="input.txt"):
+    lines = getLines(__file__, input)
     ops = [(line[0], int(line[1:])) for line in lines]
     current = 50
     password = 0
@@ -24,6 +24,14 @@ def part2():
             password += 1
         current = newCurrent % 100
     return password
+
+def test_part1_example():
+    result = part1("example.txt")
+    assert result == 3
+
+def test_part2_example():
+    result = part2("example.txt")
+    assert result == 6
 
 def test_part1():
     result = part1()

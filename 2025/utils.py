@@ -1,8 +1,9 @@
 import os
+from pathlib import Path
 
-def getLines(path):
-    fileDir = os.path.dirname(os.path.abspath(path))
-    inputFile = os.path.join(fileDir, "input.txt")
+def getLines(path, input="input.txt"):
+    target = Path(path)
+    inputFile = target.parent / input
     return open(inputFile, "r").read().splitlines()
 
 def splitLinesIntoChunks(lines):
