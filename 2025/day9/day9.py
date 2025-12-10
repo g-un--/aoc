@@ -32,10 +32,10 @@ def edge_intersects_rectangle(edge1, edge2, rect1, rect2):
     return False
 
 
-def point_in_poly(points, x, y):
+def point_in_poly(edges,  x, y):
     inside = False
 
-    for (x1, y1), (x2, y2) in zip(points, points[1:] + points[:1]):
+    for (x1, y1), (x2, y2) in edges: 
         if (
             x == x1 == x2
             and min(y1, y2) <= y <= max(y1, y2)
@@ -49,14 +49,14 @@ def point_in_poly(points, x, y):
     return inside
 
 
-def square_valid(points, point1, point2):
+def square_valid(edges, point1, point2):
     x1, y1, x2, y2 = *point1, *point2
     x1, x2 = sorted([x1, x2])
     y1, y2 = sorted([y1, y2])
     for x, y in [(x1, y1), (x1, y2), (x2, y1), (x2, y2)]:
-        if not point_in_poly(points, x, y):
+        if not point_in_poly(edges, x, y):
             return False
-    for edge1, edge2 in zip(points, points[1:] + points[:1]):
+    for edge1, edge2 in edges:
         if edge_intersects_rectangle(edge1, edge2, (x1, y1), (x2, y2)):
             return False
     return True
@@ -65,14 +65,15 @@ def square_valid(points, point1, point2):
 def part1(input="input.txt"):
     lines = [line.split(",") for line in getLines(__file__, input)]
     points = [(int(part[0]), int(part[1])) for part in lines]
-    maxArea = scanAreas(points, lambda point1, point2: True)
+    maxArea = scanAreas(points, lambda _, __: True)
     return maxArea
 
 
 def part2(input="input.txt"):
     lines = [line.split(",") for line in getLines(__file__, input)]
     points = [(int(part[0]), int(part[1])) for part in lines]
-    maxArea = scanAreas(points, lambda rect1, rect2: square_valid(points, rect1, rect2))
+    edges = list(zip(points, points[1:] + points[:1]))
+    maxArea = scanAreas(points, lambda rect1, rect2: square_valid(edges, rect1, rect2))
     return maxArea
 
 
