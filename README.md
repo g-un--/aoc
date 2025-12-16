@@ -29,3 +29,13 @@ bun test ./day1
 cd ./2023
 uv run pytest -v ./day1
 ```
+* 2024 - Python
+```
+cd ./2024
+uv run pytest -v ./day1
+```
+* 2025 - Python
+```
+cd ./2025
+uv run pytest -v ./day1
+```
