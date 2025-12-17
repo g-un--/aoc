@@ -1,10 +1,10 @@
-import os
 from pathlib import Path
 
 def getLines(path, input="input.txt"):
     target = Path(path)
     inputFile = target.parent / input
-    return open(inputFile, "r").read().splitlines()
+    with open(inputFile, "r") as f:
+        return f.read().splitlines()
 
 def splitLinesIntoChunks(lines):
     result = []

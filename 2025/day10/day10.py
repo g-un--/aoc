@@ -1,6 +1,7 @@
 from utils import getLines
-
 from itertools import combinations
+from scipy.optimize import LinearConstraint, milp
+import numpy as np
 
 
 def find_min_pushes(buttons, targetValue):
@@ -30,6 +31,26 @@ def part1(input="input.txt"):
     return result
 
 
+def part2(input="input.txt"):
+    lines = getLines(__file__, input)
+    result = 0
+    for line in lines:
+        _, *buttons, joltages = line.split()
+        buttonValues = [tuple(map(int, button[1:-1].split(","))) for button in buttons]
+        targetValues = list(map(int, joltages[1:-1].split(",")))
+        c = np.ones(len(buttonValues), dtype=int)
+        b = np.array(targetValues, dtype=int)
+        A = np.zeros((len(targetValues), len(buttonValues)))
+        for index, button in enumerate(buttonValues):
+            for counter in button:
+                A[counter, index] = 1
+        constraints = LinearConstraint(A, b, b)
+        integrality = np.ones_like(c)
+        res = milp(c=c, constraints=constraints, integrality=integrality)
+        result += int(sum(res.x))
+    return result
+
+
 def test_part1_example():
     result = part1("example.txt")
     assert result == 7
@@ -38,3 +59,13 @@ def test_part1_example():
 def test_part1():
     result = part1()
     assert result == 385
+
+
+def test_part2_example():
+    result = part2("example.txt")
+    assert result == 33
+
+
+def test_part2():
+    result = part2()
+    assert result == 16757
